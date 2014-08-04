@@ -1,6 +1,3 @@
-* parameterize:
-..* User type
-..* salt derivation function
-..* iterations and output length of hash function
+* parameterize User type
 * user priviledge levels
 * dsl and/or types for priviledge control of pages and functions
