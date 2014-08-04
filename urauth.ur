@@ -1,7 +1,7 @@
 signature AUTHORITY_CONF = sig
     val hash_length : int
     val iterations : int
-    val derive_salt : int -> string -> string -> transaction int
+    val derive_salt : int -> string -> string -> transaction string
 end
 
 signature AUTHORITY = sig
@@ -42,15 +42,12 @@ functor Make(A : AUTHORITY_CONF) : AUTHORITY = struct
 	    Some _ => return None
 	  | None =>
 	    user_id <- nextval user_counter;
-	    salt' <- rand;
-	    let
-		val salt = show salt'
-	    in
-		case hash_pass pass salt of
-		    None => return None
-		  | Some(hash) =>
-		    dml (INSERT INTO users (Id, UserName, PassHash, PassSalt)
-			 VALUES ({[user_id]}, {[uname]}, {[hash]}, {[salt]}));
-		    return (Some user_id)
-	    end
+	    salt <- A.derive_salt user_id uname pass;
+	    case hash_pass pass salt of
+		None => return None
+	      | Some(hash) =>
+		dml (INSERT INTO users (Id, UserName, PassHash, PassSalt)
+		     VALUES ({[user_id]}, {[uname]}, {[hash]}, {[salt]}));
+		return (Some user_id)
+		
 end

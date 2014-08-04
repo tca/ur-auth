@@ -1,7 +1,7 @@
 signature AUTHORITY_CONF = sig
     val hash_length : int
     val iterations : int
-    val derive_salt : int -> string -> string -> transaction int
+    val derive_salt : int -> string -> string -> transaction string
 end
 
 signature AUTHORITY = sig

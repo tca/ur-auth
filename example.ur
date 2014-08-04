@@ -10,7 +10,7 @@ fun fail () = return <xml><head><title>oops!</title></head><body>
 structure ExAuth = Urauth.Make(struct
 				   val hash_length = 20
 				   val iterations = 1024
-				   fun derive_salt i u p = i <- rand; return i
+				   fun derive_salt i u p = i <- rand; return (show i)
 			       end)
 
 fun register r =
