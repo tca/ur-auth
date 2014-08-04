@@ -1,0 +1,3 @@
+[submodule "ur-pbkdf2"]
+	path = ur-pbkdf2
+	url = https://github.com/enn/ur-pbkdf2.git
