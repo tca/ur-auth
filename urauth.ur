@@ -8,6 +8,7 @@ end
 
 signature AUTHORITY = sig
     val get_session : unit -> transaction (option int)
+    val clear_session : unit -> transaction unit
     val auth_user : string -> string -> transaction (option int)
     val add_user : string -> string -> transaction (option int)
 end
@@ -40,6 +41,8 @@ functor Make(A : AUTHORITY_CONF) : AUTHORITY = struct
 	    return ()
 	end
 
+    fun clear_session () = clearCookie s; return ()
+
     fun get_session () =
 	so <- getCookie s;
 	case so of
@@ -48,7 +51,8 @@ functor Make(A : AUTHORITY_CONF) : AUTHORITY = struct
 	    u <- oneOrNoRows (SELECT sessions.Id FROM sessions WHERE sessions.Key={[skey]});
 	    case u of
 		None => return None
-	      | Some sess => return (Some sess.Sessions.Id)
+	      | Some session => return (Some session.Sessions.Id)
+    
 
     fun garbage_collect_sessions () =
 	dt <- now;

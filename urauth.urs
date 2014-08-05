@@ -8,6 +8,7 @@ end
 
 signature AUTHORITY = sig
     val get_session : unit -> transaction (option int)
+    val clear_session : unit -> transaction unit	      
     val auth_user : string -> string -> transaction (option int)
     val add_user : string -> string -> transaction (option int)
 end

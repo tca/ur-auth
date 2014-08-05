@@ -6,33 +6,40 @@ structure ExAuth = Urauth.Make(struct
 				   fun derive_salt i u p = i <- rand; return (show i)
 			       end)
 
-fun secret () =
+fun logout () =
+    ExAuth.clear_session ();
+    redirect (url (main ()))
+
+and secret () =
     so <- ExAuth.get_session ();
     return <xml><head><title>Secret Area!</title></head><body>
       {case so of
 	   None => <xml>no trespassing!</xml>
-	 | Some id => <xml>welcome, {[id]}!</xml>}
+	 | Some id => <xml>
+	   welcome, {[id]}!<br/>
+	   <a href={url (logout ())}>logout</a>
+	 </xml>}
     </body></xml>
 
-fun err () =
+and err () =
     so <- ExAuth.get_session ();
     return <xml><head><title>error!</title></head><body>
       error!
     </body></xml>
 				 
-fun register r =
+and register r =
     r <- ExAuth.add_user r.UserName r.Password;
     case r of
 	None => redirect (url (err ()))
       | _ => redirect (url (secret ()))
 	      
-fun auth r =
+and auth r =
     r <- ExAuth.auth_user r.UserName r.Password;
     case r of
 	None => redirect (url (err ()))
       | _ => redirect (url (secret ()))
 
-fun forms () = <xml>
+and forms () = <xml>
   <h1>Register</h1>
   <form>
     <textbox{#UserName}/>
@@ -47,7 +54,7 @@ fun forms () = <xml>
   </form>
 </xml>
 
-fun main () =
+and main () =
     so <- ExAuth.get_session ();
     case so of
 	Some _ => (redirect (url (secret ())))
