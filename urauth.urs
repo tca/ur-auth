@@ -1,10 +1,12 @@
 signature AUTHORITY_CONF = sig
     val hash_length : int
     val iterations : int
+    val session_length : int
     val derive_salt : int -> string -> string -> transaction string
 end
 
 signature AUTHORITY = sig
+    val get_session : unit -> transaction (option int)
     val auth_user : string -> string -> transaction (option int)
     val add_user : string -> string -> transaction (option int)
 end
