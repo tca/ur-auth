@@ -2,6 +2,7 @@ signature AUTHORITY_CONF = sig
     val hash_length : int
     val iterations : int
     val session_length : int
+    val secure_cookie : bool
     val derive_salt : int -> string -> string -> transaction string
 end
 

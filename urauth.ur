@@ -2,6 +2,7 @@ signature AUTHORITY_CONF = sig
     val hash_length : int
     val iterations : int
     val session_length : int
+    val secure_cookie : bool
     val derive_salt : int -> string -> string -> transaction string
 end
 
@@ -33,7 +34,7 @@ functor Make(A : AUTHORITY_CONF) : AUTHORITY = struct
 	in
 	    setCookie s { Value = (show r),
 			  Expires = (Some expires),
-			  Secure = True};
+			  Secure = A.secure_cookie};
 	    dml (INSERT INTO sessions (Id, Key, Expires)
 		 VALUES ({[uid]}, {[show r]}, {[expires]}));
 	    return ()
@@ -55,7 +56,7 @@ functor Make(A : AUTHORITY_CONF) : AUTHORITY = struct
 	return ()
 	
     (* 24 hours = 86400 seconds *)
-    (* task periodic 86400 = garbage_collect_sessions *)
+    task periodic 86400 = garbage_collect_sessions
 
     (* 1. is user already logged in?
        2. check credentials

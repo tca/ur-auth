@@ -2,6 +2,7 @@ structure ExAuth = Urauth.Make(struct
 				   val hash_length = 20
 				   val iterations = 1024
 				   val session_length = 7
+				   val secure_cookie = False
 				   fun derive_salt i u p = i <- rand; return (show i)
 			       end)
 
